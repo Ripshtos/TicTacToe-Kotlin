@@ -66,22 +66,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkRowForWinner(row: Int): Boolean {
         return !board[row][0].isEmpty() &&
-                board[row][0].cellState == board[row][1].cellState &&
-                board[row][0].cellState == board[row][2].cellState
+                board[row][0].isSameState(board[row][1]) &&
+                board[row][0].isSameState(board[row][2])
     }
 
     private fun checkColumnForWinner(col: Int): Boolean {
         return !board[0][col].isEmpty() &&
-                board[0][col].cellState == board[1][col].cellState &&
-                board[0][col].cellState == board[2][col].cellState
+                board[0][col].isSameState(board[1][col]) &&
+                board[0][col].isSameState(board[2][col])
     }
 
     private fun checkDiagonalsForWinner(row: Int, col: Int): Boolean {
         return !board[row][col].isEmpty() &&
-                (row == col && board[0][0].cellState == board[1][1].cellState &&
-                        board[0][0].cellState == board[2][2].cellState ||
-                row + col == 2 && board[0][2].cellState == board[1][1].cellState &&
-                        board[0][2].cellState == board[2][0].cellState)
+                (row == col && board[0][0].isSameState(board[1][1]) &&
+                        board[0][0].isSameState(board[2][2]) ||
+                row + col == 2 && board[0][2].isSameState(board[1][1]) &&
+                        board[0][2].isSameState(board[2][0]))
     }
 
     private fun isBoardFull(): Boolean {

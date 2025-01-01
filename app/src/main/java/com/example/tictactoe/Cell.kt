@@ -20,4 +20,8 @@ class Cell(var button: Button) {
         button.text = ""
         button.isEnabled = true
     }
+
+    fun isSameState(cell: Cell): Boolean {
+        return cellState == cell.cellState
+    }
 }
