@@ -48,20 +48,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onCellClicked(row: Int, col: Int) {
-        if (board[row][col] == CellState.EMPTY) {
-            board[row][col] = currentPlayer.cellState
-            buttons[row][col].text = currentPlayer.cellState.toString()
-            buttons[row][col].isEnabled = false
+        board[row][col] = currentPlayer.cellState
+        buttons[row][col].text = currentPlayer.cellState.toString()
+        buttons[row][col].isEnabled = false
 
-            if (checkForWinner(row, col)) {
-                winnerTextView.text = "$currentPlayer wins!"
-                disableButtons()
-            } else if (isBoardFull()) {
-                winnerTextView.text = "It's a draw!"
-                disableButtons()
-            } else {
-                currentPlayer = if (currentPlayer == Player.X) Player.O else Player.X
-            }
+        if (checkForWinner(row, col)) {
+            winnerTextView.text = "$currentPlayer wins!"
+            disableButtons()
+        } else if (isBoardFull()) {
+            winnerTextView.text = "It's a draw!"
+            disableButtons()
+        } else {
+            currentPlayer = if (currentPlayer == Player.X) Player.O else Player.X
         }
     }
 
