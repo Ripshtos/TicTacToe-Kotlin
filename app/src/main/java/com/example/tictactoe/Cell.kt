@@ -8,4 +8,16 @@ class Cell(var button: Button) {
     fun isEmpty(): Boolean {
         return cellState == CellState.EMPTY
     }
+
+    fun fill(cellState: CellState) {
+        this.cellState = cellState
+        button.text = cellState.toString()
+        button.isEnabled = false
+    }
+
+    fun reset() {
+        cellState = CellState.EMPTY
+        button.text = ""
+        button.isEnabled = true
+    }
 }

@@ -47,11 +47,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onCellClicked(row: Int, col: Int) {
-        var cell: Cell = board[row][col]
-
-        cell.cellState = currentPlayer.cellState
-        cell.button.text = currentPlayer.cellState.toString()
-        cell.button.isEnabled = false
+        board[row][col].fill(currentPlayer.cellState)
 
         if (checkForWinner(row, col)) {
             winnerTextView.text = "$currentPlayer wins!"
@@ -100,10 +96,6 @@ class MainActivity : AppCompatActivity() {
         currentPlayer = Player.X
         winnerTextView.text = ""
 
-        board.forEach { row -> row.forEach { cell ->
-            cell.cellState = CellState.EMPTY
-            cell.button.text = ""
-            cell.button.isEnabled = true
-        } }
+        board.forEach { row -> row.forEach { cell -> cell.reset() } }
     }
 }
