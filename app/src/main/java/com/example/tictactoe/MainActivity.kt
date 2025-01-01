@@ -38,13 +38,9 @@ class MainActivity : AppCompatActivity() {
             )
         )
 
-        for (i in 0..2) {
-            for (j in 0..2) {
-                buttons[i][j].setOnClickListener {
-                    onCellClicked(i, j)
-                }
-            }
-        }
+        buttons.forEachIndexed { i, row -> row.forEachIndexed { j, button -> button.setOnClickListener {
+            onCellClicked(i, j)
+        } } }
 
         playAgainButton.setOnClickListener {
             resetGame()
@@ -87,22 +83,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun isBoardFull(): Boolean {
-        for (i in 0..2) {
-            for (j in 0..2) {
-                if (board[i][j] == CellState.EMPTY) {
-                    return false
-                }
-            }
-        }
-        return true
+        return !board.any { row -> row.any { cell -> cell == CellState.EMPTY } }
     }
 
     private fun disableButtons() {
-        for (i in 0..2) {
-            for (j in 0..2) {
-                buttons[i][j].isEnabled = false
-            }
-        }
+        buttons.forEach { row -> row.forEach { button -> button.isEnabled = false } }
     }
 
     private fun resetGame() {
@@ -110,11 +95,9 @@ class MainActivity : AppCompatActivity() {
         board = Array(3) { Array(3) { CellState.EMPTY } }
         winnerTextView.text = ""
 
-        for (i in 0..2) {
-            for (j in 0..2) {
-                buttons[i][j].text = ""
-                buttons[i][j].isEnabled = true
-            }
-        }
+        buttons.forEach { row -> row.forEach { button ->
+            button.text = ""
+            button.isEnabled = true
+        } }
     }
 }
