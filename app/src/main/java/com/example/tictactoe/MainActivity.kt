@@ -69,19 +69,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkRowForWinner(row: Int): Boolean {
-        return board[row][0].cellState != CellState.EMPTY &&
+        return !board[row][0].isEmpty() &&
                 board[row][0].cellState == board[row][1].cellState &&
                 board[row][0].cellState == board[row][2].cellState
     }
 
     private fun checkColumnForWinner(col: Int): Boolean {
-        return board[0][col].cellState != CellState.EMPTY &&
+        return !board[0][col].isEmpty() &&
                 board[0][col].cellState == board[1][col].cellState &&
                 board[0][col].cellState == board[2][col].cellState
     }
 
     private fun checkDiagonalsForWinner(row: Int, col: Int): Boolean {
-        return board[row][col].cellState != CellState.EMPTY &&
+        return !board[row][col].isEmpty() &&
                 (row == col && board[0][0].cellState == board[1][1].cellState &&
                         board[0][0].cellState == board[2][2].cellState ||
                 row + col == 2 && board[0][2].cellState == board[1][1].cellState &&
@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun isBoardFull(): Boolean {
-        return !board.any { row -> row.any { cell -> cell.cellState == CellState.EMPTY } }
+        return !board.any { row -> row.any { cell -> cell.isEmpty() } }
     }
 
     private fun disableButtons() {

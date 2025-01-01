@@ -4,4 +4,8 @@ import android.widget.Button
 
 class Cell(var button: Button) {
     var cellState: CellState = CellState.EMPTY
+
+    fun isEmpty(): Boolean {
+        return cellState == CellState.EMPTY
+    }
 }
