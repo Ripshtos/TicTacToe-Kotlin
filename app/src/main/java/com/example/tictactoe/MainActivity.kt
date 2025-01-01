@@ -20,21 +20,9 @@ class MainActivity : AppCompatActivity() {
         playAgainButton = findViewById(R.id.playAgainButton)
 
         board = arrayOf(
-            arrayOf(
-                Cell(findViewById<Button>(R.id.button0)),
-                Cell(findViewById(R.id.button1)),
-                Cell(findViewById(R.id.button2))
-            ),
-            arrayOf(
-                Cell(findViewById(R.id.button3)),
-                Cell(findViewById(R.id.button4)),
-                Cell(findViewById(R.id.button5))
-            ),
-            arrayOf(
-                Cell(findViewById(R.id.button6)),
-                Cell(findViewById(R.id.button7)),
-                Cell(findViewById(R.id.button8))
-            )
+            arrayOf(createCell(R.id.button0), createCell(R.id.button1), createCell(R.id.button2)),
+            arrayOf(createCell(R.id.button3), createCell(R.id.button4), createCell(R.id.button5)),
+            arrayOf(createCell(R.id.button6), createCell(R.id.button7), createCell(R.id.button8))
         )
 
         board.forEachIndexed { i, row -> row.forEachIndexed { j, cell -> cell.button.setOnClickListener {
@@ -44,6 +32,10 @@ class MainActivity : AppCompatActivity() {
         playAgainButton.setOnClickListener {
             resetGame()
         }
+    }
+
+    private fun createCell(buttonId: Int): Cell {
+        return Cell(findViewById<Button>(buttonId))
     }
 
     private fun onCellClicked(row: Int, col: Int) {
