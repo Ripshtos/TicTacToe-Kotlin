@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
             buttons[row][col].text = currentPlayer.cellState.toString()
             buttons[row][col].isEnabled = false
 
-            if (checkForWinner()) {
+            if (checkForWinner(row, col)) {
                 winnerTextView.text = "$currentPlayer wins!"
                 disableButtons()
             } else if (isBoardFull()) {
@@ -69,23 +69,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkForWinner(): Boolean {
-        // Check rows, columns, and diagonals for a winner
-        for (i in 0..2) {
-            if (board[i][0] != CellState.EMPTY && board[i][0] == board[i][1] && board[i][0] == board[i][2]) {
-                return true
-            }
-            if (board[0][i] != CellState.EMPTY && board[0][i] == board[1][i] && board[0][i] == board[2][i]) {
-                return true
-            }
-        }
-        if (board[0][0] != CellState.EMPTY && board[0][0] == board[1][1] && board[0][0] == board[2][2]) {
-            return true
-        }
-        if (board[0][2] != CellState.EMPTY && board[0][2] == board[1][1] && board[0][2] == board[2][0]) {
-            return true
-        }
-        return false
+    private fun checkForWinner(row: Int, col: Int): Boolean {
+        return checkRowForWinner(row) || checkColumnForWinner(col) || checkDiagonalsForWinner(row, col)
+    }
+
+    private fun checkRowForWinner(row: Int): Boolean {
+        return board[row][0] != CellState.EMPTY && board[row][0] == board[row][1] && board[row][0] == board[row][2]
+    }
+
+    private fun checkColumnForWinner(col: Int): Boolean {
+        return board[0][col] != CellState.EMPTY && board[0][col] == board[1][col] && board[0][col] == board[2][col]
+    }
+
+    private fun checkDiagonalsForWinner(row: Int, col: Int): Boolean {
+        return board[row][col] != CellState.EMPTY && (row == col && board[0][0] == board[1][1] && board[0][0] == board[2][2] ||
+                row + col == 2 && board[0][2] == board[1][1] && board[0][2] == board[2][0])
     }
 
     private fun isBoardFull(): Boolean {
