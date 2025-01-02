@@ -26,17 +26,22 @@ class MainActivity : AppCompatActivity() {
 
         board = Array(3) { row -> Array(3) { col -> createCell(row, col) } }
 
-        board.forEachIndexed { i, row -> row.forEachIndexed { j, cell -> cell.button.setOnClickListener {
-            onCellClicked(i, j)
-        } } }
-
         playAgainButton.setOnClickListener {
             resetGame()
         }
     }
 
     private fun createCell(row: Int, col: Int): Cell {
-        return Cell(findViewById<Button>(cellButtonIds[row * 3 + col]))
+        return Cell(setUpButton(row, col))
+    }
+
+    private fun setUpButton(row: Int, col: Int): Button {
+        val button = findViewById<Button>(cellButtonIds[row * 3 + col])
+        button.setOnClickListener {
+            onCellClicked(row, col)
+        }
+
+        return button
     }
 
     private fun onCellClicked(row: Int, col: Int) {
