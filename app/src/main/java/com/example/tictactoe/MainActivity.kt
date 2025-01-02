@@ -11,6 +11,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var board: Array<Array<Cell>>
     private lateinit var winnerTextView: TextView
     private lateinit var playAgainButton: Button
+    private var cellButtonIds: Array<Int> = arrayOf(
+        R.id.button0, R.id.button1, R.id.button2,
+        R.id.button3, R.id.button4, R.id.button5,
+        R.id.button6, R.id.button7, R.id.button8
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,11 +24,7 @@ class MainActivity : AppCompatActivity() {
         winnerTextView = findViewById(R.id.winnerTextView)
         playAgainButton = findViewById(R.id.playAgainButton)
 
-        board = arrayOf(
-            arrayOf(createCell(R.id.button0), createCell(R.id.button1), createCell(R.id.button2)),
-            arrayOf(createCell(R.id.button3), createCell(R.id.button4), createCell(R.id.button5)),
-            arrayOf(createCell(R.id.button6), createCell(R.id.button7), createCell(R.id.button8))
-        )
+        board = Array(3) { row -> Array(3) { col -> createCell(row, col) } }
 
         board.forEachIndexed { i, row -> row.forEachIndexed { j, cell -> cell.button.setOnClickListener {
             onCellClicked(i, j)
@@ -34,8 +35,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun createCell(buttonId: Int): Cell {
-        return Cell(findViewById<Button>(buttonId))
+    private fun createCell(row: Int, col: Int): Cell {
+        return Cell(findViewById<Button>(cellButtonIds[row * 3 + col]))
     }
 
     private fun onCellClicked(row: Int, col: Int) {
