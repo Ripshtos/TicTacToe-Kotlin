@@ -1,19 +1,21 @@
 package com.example.tictactoe
 
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.semantics.text
 
 class MainActivity : AppCompatActivity() {
 
-    private var currentPlayer = 1
-    private var board = Array(3) { IntArray(3) { 0 } }
-    private lateinit var buttons: Array<Array<Button>>
+    private var currentPlayer = Player.X
+    private lateinit var board: Array<Array<Cell>>
     private lateinit var winnerTextView: TextView
     private lateinit var playAgainButton: Button
+    private var cellButtonIds: Array<Int> = arrayOf(
+        R.id.button0, R.id.button1, R.id.button2,
+        R.id.button3, R.id.button4, R.id.button5,
+        R.id.button6, R.id.button7, R.id.button8
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,103 +24,76 @@ class MainActivity : AppCompatActivity() {
         winnerTextView = findViewById(R.id.winnerTextView)
         playAgainButton = findViewById(R.id.playAgainButton)
 
-        buttons = arrayOf(
-            arrayOf(
-                findViewById<Button>(R.id.button0),
-                findViewById(R.id.button1),
-                findViewById(R.id.button2)
-            ),
-            arrayOf(
-                findViewById(R.id.button3),
-                findViewById(R.id.button4),
-                findViewById(R.id.button5)
-            ),
-            arrayOf(
-                findViewById(R.id.button6),
-                findViewById(R.id.button7),
-                findViewById(R.id.button8)
-            )
-        )
-
-        for (i in 0..2) {
-            for (j in 0..2) {
-                buttons[i][j].setOnClickListener {
-                    onCellClicked(i, j)
-                }
-            }
-        }
+        board = Array(3) { row -> Array(3) { col -> createCell(row, col) } }
 
         playAgainButton.setOnClickListener {
             resetGame()
         }
     }
 
-    private fun onCellClicked(row: Int, col: Int) {
-        if (board[row][col] == 0) {
-            board[row][col] = currentPlayer
-            buttons[row][col].text = if (currentPlayer == 1) "X" else "O"
-            buttons[row][col].isEnabled = false
+    private fun createCell(row: Int, col: Int): Cell {
+        return Cell(setUpButton(row, col))
+    }
 
-            if (checkForWinner()) {
-                winnerTextView.text = if (currentPlayer == 1) "X wins!" else "O wins!"
-                disableButtons()
-            } else if (isBoardFull()) {
-                winnerTextView.text = "It's a draw!"
-                disableButtons()
-            } else {
-                currentPlayer = 3 - currentPlayer // Switch players (1 to 2 or 2 to 1)
-            }
+    private fun setUpButton(row: Int, col: Int): Button {
+        val button = findViewById<Button>(cellButtonIds[row * 3 + col])
+        button.setOnClickListener {
+            onCellClicked(row, col)
+        }
+
+        return button
+    }
+
+    private fun onCellClicked(row: Int, col: Int) {
+        board[row][col].fill(currentPlayer.cellState)
+
+        if (checkForWinner(row, col)) {
+            winnerTextView.text = "$currentPlayer wins!"
+            disableButtons()
+        } else if (isBoardFull()) {
+            winnerTextView.text = "It's a draw!"
+            disableButtons()
+        } else {
+            currentPlayer = if (currentPlayer == Player.X) Player.O else Player.X
         }
     }
 
-    private fun checkForWinner(): Boolean {
-        // Check rows, columns, and diagonals for a winner
-        for (i in 0..2) {
-            if (board[i][0] != 0 && board[i][0] == board[i][1] && board[i][0] == board[i][2]) {
-                return true
-            }
-            if (board[0][i] != 0 && board[0][i] == board[1][i] && board[0][i] == board[2][i]) {
-                return true
-            }
-        }
-        if (board[0][0] != 0 && board[0][0] == board[1][1] && board[0][0] == board[2][2]) {
-            return true
-        }
-        if (board[0][2] != 0 && board[0][2] == board[1][1] && board[0][2] == board[2][0]) {
-            return true
-        }
-        return false
+    private fun checkForWinner(row: Int, col: Int): Boolean {
+        return checkRowForWinner(row) || checkColumnForWinner(col) || checkDiagonalsForWinner(row, col)
+    }
+
+    private fun checkRowForWinner(row: Int): Boolean {
+        return !board[row][0].isEmpty() &&
+                board[row][0].isSameState(board[row][1]) &&
+                board[row][0].isSameState(board[row][2])
+    }
+
+    private fun checkColumnForWinner(col: Int): Boolean {
+        return !board[0][col].isEmpty() &&
+                board[0][col].isSameState(board[1][col]) &&
+                board[0][col].isSameState(board[2][col])
+    }
+
+    private fun checkDiagonalsForWinner(row: Int, col: Int): Boolean {
+        return !board[row][col].isEmpty() &&
+                (row == col && board[0][0].isSameState(board[1][1]) &&
+                        board[0][0].isSameState(board[2][2]) ||
+                row + col == 2 && board[0][2].isSameState(board[1][1]) &&
+                        board[0][2].isSameState(board[2][0]))
     }
 
     private fun isBoardFull(): Boolean {
-        for (i in 0..2) {
-            for (j in 0..2) {
-                if (board[i][j] == 0) {
-                    return false
-                }
-            }
-        }
-        return true
+        return !board.any { row -> row.any { cell -> cell.isEmpty() } }
     }
 
     private fun disableButtons() {
-        for (i in 0..2) {
-            for (j in 0..2) {
-                buttons[i][j].isEnabled = false
-            }
-        }
+        board.forEach { row -> row.forEach { cell -> cell.button.isEnabled = false } }
     }
 
     private fun resetGame() {
-        currentPlayer = 1
-        board = Array(3) { IntArray(3) { 0 } }
+        currentPlayer = Player.X
         winnerTextView.text = ""
 
-        for (i in 0..2) {
-            for (j in 0..2) {
-                buttons[i][j].text = ""
-                buttons[i][j].isEnabled = true
-            }
-        }
+        board.forEach { row -> row.forEach { cell -> cell.reset() } }
     }
 }
